@@ -133,7 +133,7 @@ class StatsBestProducts extends ModuleGrid
 				'.$this->displayName.'
 			</div>
 			'.$this->engine($engine_params).'
-			<a class="btn btn-default export-csv" href="'.htmlentities($_SERVER['REQUEST_URI']).'&export=1">
+			<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
 				<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
 			</a>';
 
