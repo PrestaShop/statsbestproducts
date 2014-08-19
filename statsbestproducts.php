@@ -166,6 +166,7 @@ class StatsBestProducts extends ModuleGrid
 				LEFT JOIN '._DB_PREFIX_.'product_lang pl ON (p.id_product = pl.id_product AND pl.id_lang = '.(int)$this->getLang().Shop::addSqlRestrictionOnLang('pl').')
 				LEFT JOIN '._DB_PREFIX_.'order_detail od ON od.product_id = p.id_product
 				LEFT JOIN '._DB_PREFIX_.'orders o ON od.id_order = o.id_order
+				'.Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o').'
 				'.Product::sqlStock('p', 0).'
 				WHERE product_shop.active = 1
 					AND o.valid = 1
