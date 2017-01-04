@@ -42,7 +42,7 @@ class statsbestproducts extends ModuleGrid
     {
         $this->name = 'statsbestproducts';
         $this->tab = 'analytics_stats';
-        $this->version = '1.5.0';
+        $this->version = '2.0.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
@@ -50,69 +50,69 @@ class statsbestproducts extends ModuleGrid
 
         $this->default_sort_column = 'totalPriceSold';
         $this->default_sort_direction = 'DESC';
-        $this->empty_message = $this->l('An empty record-set was returned.');
-        $this->paging_message = sprintf($this->l('Displaying %1$s of %2$s'), '{0} - {1}', '{2}');
+        $this->empty_message = $this->trans('An empty record-set was returned.', array(), 'Modules.Statsbestproducts.Admin');
+        $this->paging_message = $this->trans('Displaying %1$s of %2$s', array('{0} - {1}', '{2}'), 'Admin.Global');
 
         $this->columns = array(
             array(
                 'id' => 'reference',
-                'header' => $this->l('Reference'),
+                'header' => $this->trans('Reference', array(), 'Admin.Global'),
                 'dataIndex' => 'reference',
                 'align' => 'left'
             ),
             array(
                 'id' => 'name',
-                'header' => $this->l('Name'),
+                'header' => $this->trans('Name', array(), 'Admin.Global'),
                 'dataIndex' => 'name',
                 'align' => 'left'
             ),
             array(
                 'id' => 'totalQuantitySold',
-                'header' => $this->l('Quantity sold'),
+                'header' => $this->trans('Quantity sold', array(), 'Admin.Global'),
                 'dataIndex' => 'totalQuantitySold',
                 'align' => 'center'
             ),
             array(
                 'id' => 'avgPriceSold',
-                'header' => $this->l('Price sold'),
+                'header' => $this->trans('Price sold', array(), 'Modules.Statsbestproducts.Admin'),
                 'dataIndex' => 'avgPriceSold',
                 'align' => 'right'
             ),
             array(
                 'id' => 'totalPriceSold',
-                'header' => $this->l('Sales'),
+                'header' => $this->trans('Sales', array(), 'Admin.Global'),
                 'dataIndex' => 'totalPriceSold',
                 'align' => 'right'
             ),
             array(
                 'id' => 'averageQuantitySold',
-                'header' => $this->l('Quantity sold in a day'),
+                'header' => $this->trans('Quantity sold in a day', array(), 'Modules.Statsbestproducts.Admin'),
                 'dataIndex' => 'averageQuantitySold',
                 'align' => 'center'
             ),
             array(
                 'id' => 'totalPageViewed',
-                'header' => $this->l('Page views'),
+                'header' => $this->trans('Page views', array(), 'Modules.Statsbestproducts.Admin'),
                 'dataIndex' => 'totalPageViewed',
                 'align' => 'center'
             ),
             array(
                 'id' => 'quantity',
-                'header' => $this->l('Available quantity for sale'),
+                'header' => $this->trans('Available quantity for sale', array(), 'Admin.Global'),
                 'dataIndex' => 'quantity',
                 'align' => 'center'
             ),
             array(
                 'id' => 'active',
-                'header' => $this->l('Active'),
+                'header' => $this->trans('Active', array(), 'Admin.Global'),
                 'dataIndex' => 'active',
                 'align' => 'center'
             )
         );
 
-        $this->displayName = $this->l('Best-selling products');
-        $this->description = $this->l('Adds a list of the best-selling products to the Stats dashboard.');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->displayName = $this->trans('Best-selling products', array(), 'Modules.Statsbestproducts.Admin');
+        $this->description = $this->trans('Adds a list of the best-selling products to the Stats dashboard.', array(), 'Modules.Statsbestproducts.Admin');
+        $this->ps_versions_compliancy = array('min' => '1.7.0.0', 'max' => _PS_VERSION_);
     }
 
     public function install()
@@ -139,7 +139,7 @@ class statsbestproducts extends ModuleGrid
         return '<div class="panel-heading">'.$this->displayName.'</div>
 		'.$this->engine($engine_params).'
 		<a class="btn btn-default export-csv" href="'.Tools::safeOutput($_SERVER['REQUEST_URI'].'&export=1').'">
-			<i class="icon-cloud-upload"></i> '.$this->l('CSV Export').'
+			<i class="icon-cloud-upload"></i> '.$this->trans('CSV Export', array(), 'Admin.Global').'
 		</a>';
     }
 
