@@ -112,7 +112,7 @@ class statsbestproducts extends ModuleGrid
 
         $this->displayName = $this->trans('Best-selling products', array(), 'Modules.Statsbestproducts.Admin');
         $this->description = $this->trans('Adds a list of the best-selling products to the Stats dashboard.', array(), 'Modules.Statsbestproducts.Admin');
-        $this->ps_versions_compliancy = array('min' => '1.7.0.0', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array('min' => '1.7.1.0', 'max' => _PS_VERSION_);
     }
 
     public function install()
