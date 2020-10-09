@@ -2,7 +2,7 @@
 
 ## About
 
-Adds a list of the best-selling products to the Stats dashboard.
+Enrich your stats with a small list of your best-sellers to better know your customers.
 
 ## Reporting issues
 
