@@ -150,11 +150,11 @@ class statsbestproducts extends ModuleGrid
         $array_date_between = explode(' AND ', $date_between);
 
         $this->query = 'SELECT SQL_CALC_FOUND_ROWS p.reference, p.id_product, pl.name,
-				ROUND(AVG(od.product_price / o.conversion_rate), 2) as avgPriceSold,
+				ROUND(AVG(od.unit_price_tax_excl / o.conversion_rate), 2) as avgPriceSold,
 				IFNULL(stock.quantity, 0) as quantity,
 				IFNULL(SUM(od.product_quantity), 0) AS totalQuantitySold,
 				ROUND(IFNULL(IFNULL(SUM(od.product_quantity), 0) / (1 + LEAST(TO_DAYS('.$array_date_between[1].'), TO_DAYS(NOW())) - GREATEST(TO_DAYS('.$array_date_between[0].'), TO_DAYS(product_shop.date_add))), 0), 2) as averageQuantitySold,
-				ROUND(IFNULL(SUM((od.product_price * od.product_quantity) / o.conversion_rate), 0), 2) AS totalPriceSold,
+				ROUND(IFNULL(SUM((od.unit_price_tax_excl * od.product_quantity) / o.conversion_rate), 0), 2) AS totalPriceSold,
 				(
 					SELECT IFNULL(SUM(pv.counter), 0)
 					FROM '._DB_PREFIX_.'page pa
