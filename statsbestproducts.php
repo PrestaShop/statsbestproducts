@@ -189,8 +189,8 @@ class statsbestproducts extends ModuleGrid
 
         $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
         foreach ($values as &$value) {
-            $value['avgPriceSold'] = Tools::displayPrice($value['avgPriceSold'], $currency);
-            $value['totalPriceSold'] = Tools::displayPrice($value['totalPriceSold'], $currency);
+            $value['avgPriceSold'] = $this->context->getCurrentLocale()->formatPrice($value['avgPriceSold'], $currency->iso_code);
+            $value['totalPriceSold'] = $this->context->getCurrentLocale()->formatPrice($value['totalPriceSold'], $currency->iso_code);
         }
         unset($value);
 
