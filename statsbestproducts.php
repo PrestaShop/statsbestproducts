@@ -112,7 +112,7 @@ class statsbestproducts extends ModuleGrid
 
         $this->displayName = $this->trans('Best-selling products', array(), 'Modules.Statsbestproducts.Admin');
         $this->description = $this->trans('Enrich your stats with a small list of your best-sellers to better know your customers.', array(), 'Modules.Statsbestproducts.Admin');
-        $this->ps_versions_compliancy = array('min' => '1.7.1.0', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array('min' => '1.7.6.0', 'max' => _PS_VERSION_);
     }
 
     public function install()
@@ -189,8 +189,8 @@ class statsbestproducts extends ModuleGrid
 
         $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
         foreach ($values as &$value) {
-            $value['avgPriceSold'] = Tools::displayPrice($value['avgPriceSold'], $currency);
-            $value['totalPriceSold'] = Tools::displayPrice($value['totalPriceSold'], $currency);
+            $value['avgPriceSold'] = $this->context->getCurrentLocale()->formatPrice($value['avgPriceSold'], $currency->iso_code);
+            $value['totalPriceSold'] = $this->context->getCurrentLocale()->formatPrice($value['totalPriceSold'], $currency->iso_code);
         }
         unset($value);
 
