@@ -144,7 +144,7 @@ class statsbestproducts extends ModuleGrid
 
     public function getData()
     {
-        $currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
+        $currency = new Currency((int) Configuration::get('PS_CURRENCY_DEFAULT'));
         $date_between = $this->getDate();
         $array_date_between = explode(' AND ', $date_between);
 
@@ -186,7 +186,7 @@ class statsbestproducts extends ModuleGrid
             $this->query .= ' LIMIT ' . (int) $this->_start . ', ' . (int) $this->_limit;
         }
 
-        $values = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($this->query);
+        $values = Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->executeS($this->query);
         foreach ($values as &$value) {
             $value['avgPriceSold'] = $this->context->getCurrentLocale()->formatPrice($value['avgPriceSold'], $currency->iso_code);
             $value['totalPriceSold'] = $this->context->getCurrentLocale()->formatPrice($value['totalPriceSold'], $currency->iso_code);
@@ -194,6 +194,6 @@ class statsbestproducts extends ModuleGrid
         unset($value);
 
         $this->_values = $values;
-        $this->_totalCount = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('SELECT FOUND_ROWS()');
+        $this->_totalCount = (int) Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getValue('SELECT FOUND_ROWS()');
     }
 }
