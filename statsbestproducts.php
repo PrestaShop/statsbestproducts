@@ -41,7 +41,7 @@ class statsbestproducts extends ModuleGrid
     {
         $this->name = 'statsbestproducts';
         $this->tab = 'administration';
-        $this->version = '2.0.1';
+        $this->version = '2.1.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
 
