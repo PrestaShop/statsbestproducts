@@ -4,6 +4,10 @@
 
 Enrich your stats with a small list of your best-sellers to better know your customers.
 
+## Compatibility
+
+PrestaShop: `1.7.6.0` or later
+
 ## Reporting issues
 
 You can report issues with this module in the main PrestaShop repository. [Click here to report an issue][report-issue]. 
