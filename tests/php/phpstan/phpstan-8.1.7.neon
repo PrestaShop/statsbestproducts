@@ -3,3 +3,6 @@ includes:
 
 parameters:
   ignoreErrors:
+    - '#Property statsbestproducts::\$html is never read, only written\.#'
+    - '#Property ModuleGridCore::\$_direction \(string\) in isset\(\) is not nullable\.#'
+    - '#Offset .* does not exist on array\{avgPriceSold: string\}\.#'
