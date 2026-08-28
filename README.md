@@ -6,7 +6,7 @@ Enrich your stats with a small list of your best-sellers to better know your cus
 
 ## Compatibility
 
-PrestaShop: `1.7.6.0` or later
+PrestaShop: `8.2.0` or later
 
 ## Reporting issues
 
