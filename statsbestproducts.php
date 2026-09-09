@@ -146,8 +146,34 @@ class statsbestproducts extends ModuleGrid
         $currency = new Currency((int) Configuration::get('PS_CURRENCY_DEFAULT'));
         $date_between = $this->getDate();
         $array_date_between = explode(' AND ', $date_between);
+        $id_lang = (int) $this->getLang();
 
-        $this->query = 'SELECT SQL_CALC_FOUND_ROWS p.reference, p.id_product, pl.name,
+        /*
+         * Stock is only kept per combination while the feature is on. Product::sqlStock() pins the
+         * lookup to id_product_attribute = 0 when it is off, and this does the same, so a shop that
+         * once had combinations still reads its product-level stock.
+         */
+        $stock_attribute = Combination::isFeatureActive() ? 'IFNULL(od.product_attribute_id, 0)' : '0';
+
+        /*
+         * Separators and the group-name field follow Product::getAttributesResume(), core's only
+         * in-tree combination designation helper; the parentheses follow OrderDetail::$product_name,
+         * so a row here reads the way the same line reads on the order it came from.
+         * Correlated on od.product_attribute_id on purpose: joining product_attribute_combination
+         * instead would multiply the SUM()s by the number of attributes in the combination.
+         */
+        $combination_name = '(
+					SELECT GROUP_CONCAT(agl.`name`, \' - \', al.`name` ORDER BY ag.`position`, a.`position` SEPARATOR \', \')
+					FROM ' . _DB_PREFIX_ . 'product_attribute_combination pac
+					INNER JOIN ' . _DB_PREFIX_ . 'attribute a ON a.id_attribute = pac.id_attribute
+					INNER JOIN ' . _DB_PREFIX_ . 'attribute_group ag ON ag.id_attribute_group = a.id_attribute_group
+					INNER JOIN ' . _DB_PREFIX_ . 'attribute_lang al ON (al.id_attribute = a.id_attribute AND al.id_lang = ' . $id_lang . ')
+					INNER JOIN ' . _DB_PREFIX_ . 'attribute_group_lang agl ON (agl.id_attribute_group = ag.id_attribute_group AND agl.id_lang = ' . $id_lang . ')
+					WHERE pac.id_product_attribute = od.product_attribute_id
+				)';
+
+        $this->query = 'SELECT SQL_CALC_FOUND_ROWS IFNULL(NULLIF(pa.reference, \'\'), p.reference) AS reference, p.id_product,
+				CONCAT(pl.name, IFNULL(CONCAT(\' (\', ' . $combination_name . ', \')\'), \'\')) AS name,
 				ROUND(AVG(od.unit_price_tax_excl / o.conversion_rate), 2) as avgPriceSold,
 				IFNULL(stock.quantity, 0) as quantity,
 				IFNULL(SUM(od.product_quantity), 0) AS totalQuantitySold,
@@ -155,24 +181,26 @@ class statsbestproducts extends ModuleGrid
 				ROUND(IFNULL(SUM((od.unit_price_tax_excl * od.product_quantity) / o.conversion_rate), 0), 2) AS totalPriceSold,
 				(
 					SELECT IFNULL(SUM(pv.counter), 0)
-					FROM ' . _DB_PREFIX_ . 'page pa
-					LEFT JOIN ' . _DB_PREFIX_ . 'page_viewed pv ON pa.id_page = pv.id_page
+					FROM ' . _DB_PREFIX_ . 'page pag
+					LEFT JOIN ' . _DB_PREFIX_ . 'page_viewed pv ON pag.id_page = pv.id_page
 					LEFT JOIN ' . _DB_PREFIX_ . 'date_range dr ON pv.id_date_range = dr.id_date_range
-					WHERE pa.id_object = p.id_product AND pa.id_page_type = ' . (int) Page::getPageTypeByName('product') . '
+					WHERE pag.id_object = p.id_product AND pag.id_page_type = ' . (int) Page::getPageTypeByName('product') . '
 					AND dr.time_start BETWEEN ' . $date_between . '
 					AND dr.time_end BETWEEN ' . $date_between . '
 				) AS totalPageViewed,
 				product_shop.active
 				FROM ' . _DB_PREFIX_ . 'product p
 				' . Shop::addSqlAssociation('product', 'p') . '
-				LEFT JOIN ' . _DB_PREFIX_ . 'product_lang pl ON (p.id_product = pl.id_product AND pl.id_lang = ' . (int) $this->getLang() . ' ' . Shop::addSqlRestrictionOnLang('pl') . ')
+				LEFT JOIN ' . _DB_PREFIX_ . 'product_lang pl ON (p.id_product = pl.id_product AND pl.id_lang = ' . $id_lang . ' ' . Shop::addSqlRestrictionOnLang('pl') . ')
 				LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.product_id = p.id_product
 				LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON od.id_order = o.id_order
 				' . Shop::addSqlRestriction(Shop::SHARE_ORDER, 'o') . '
-				' . Product::sqlStock('p', 0) . '
+				LEFT JOIN ' . _DB_PREFIX_ . 'product_attribute pa ON pa.id_product_attribute = od.product_attribute_id
+				LEFT JOIN ' . _DB_PREFIX_ . 'stock_available stock
+					ON (stock.id_product = p.id_product AND stock.id_product_attribute = ' . $stock_attribute . StockAvailable::addSqlShopRestriction(null, null, 'stock') . ')
 				WHERE o.valid = 1
 				AND o.invoice_date BETWEEN ' . $date_between . '
-				GROUP BY od.product_id';
+				GROUP BY od.product_id, od.product_attribute_id';
 
         if (Validate::IsName($this->_sort)) {
             $this->query .= ' ORDER BY `' . bqSQL($this->_sort) . '`';
